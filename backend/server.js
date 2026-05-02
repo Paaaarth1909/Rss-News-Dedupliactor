@@ -2,8 +2,9 @@ const express = require("express");
 const Parser = require("rss-parser");
 const cors = require("cors");
 const db = require("./database");
-
+const { clusterArticles } = require("./utils/deduplicate");
 const app = express();
+
 const parser = new Parser({
   headers: {
     "User-Agent":
@@ -79,4 +80,19 @@ app.listen(PORT, () => {
 });
 app.get("/", (req, res) => {
   res.send("Backend is running 🚀");
+});
+app.get("/clustered-news", (req, res) => {
+  try {
+    const articles = db.prepare(`
+      SELECT * FROM articles
+      ORDER BY created_at DESC
+    `).all();
+
+    const clusters = clusterArticles(articles);
+
+    res.json(clusters);
+
+  } catch (err) {
+    res.status(500).send("Error clustering news");
+  }
 });
