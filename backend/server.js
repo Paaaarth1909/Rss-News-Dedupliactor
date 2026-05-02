@@ -22,7 +22,7 @@ const feeds = [
 ];
 
 app.get("/", (req, res) => {
-  res.send("Backend is running 🚀");
+  res.send("Backend is running ");
 });
 
 app.get("/news", async (req, res) => {
@@ -79,7 +79,7 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 app.get("/", (req, res) => {
-  res.send("Backend is running 🚀");
+  res.send("Backend is running ");
 });
 app.get("/clustered-news", (req, res) => {
   try {
@@ -88,13 +88,18 @@ app.get("/clustered-news", (req, res) => {
       ORDER BY created_at DESC
     `).all();
 
+    console.log("Articles fetched:", articles.length);
+
     const clusters = clusterArticles(articles);
+
+    console.log("Clusters created:", clusters.length);
 
     const formatted = formatClusters(clusters);
 
     res.json(formatted);
 
   } catch (err) {
+    console.error("ERROR:", err);
     res.status(500).send("Error clustering news");
   }
 });

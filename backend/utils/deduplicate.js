@@ -60,4 +60,3 @@ function formatClusters(clusters) {
 }
 
 module.exports = { clusterArticles, formatClusters };
-module.exports = { clusterArticles };
