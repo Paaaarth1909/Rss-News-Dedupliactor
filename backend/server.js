@@ -2,7 +2,7 @@ const express = require("express");
 const Parser = require("rss-parser");
 const cors = require("cors");
 const db = require("./database");
-const { clusterArticles } = require("./utils/deduplicate");
+const { clusterArticles, formatClusters } = require("./utils/deduplicate");
 const app = express();
 
 const parser = new Parser({
@@ -90,7 +90,9 @@ app.get("/clustered-news", (req, res) => {
 
     const clusters = clusterArticles(articles);
 
-    res.json(clusters);
+    const formatted = formatClusters(clusters);
+
+    res.json(formatted);
 
   } catch (err) {
     res.status(500).send("Error clustering news");

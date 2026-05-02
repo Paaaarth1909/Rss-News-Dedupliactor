@@ -44,5 +44,20 @@ function clusterArticles(articles) {
 
   return clusters;
 }
+function formatClusters(clusters) {
+  return clusters.map(cluster => {
+    const headline = cluster[0].title;
 
+    const sources = [...new Set(cluster.map(a => a.source))];
+
+    return {
+      headline,
+      totalArticles: cluster.length,
+      sources,
+      articles: cluster
+    };
+  });
+}
+
+module.exports = { clusterArticles, formatClusters };
 module.exports = { clusterArticles };
