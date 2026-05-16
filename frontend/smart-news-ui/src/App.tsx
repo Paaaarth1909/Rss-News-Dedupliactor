@@ -22,7 +22,13 @@ type Metric = {
   value: number;
 };
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:5050";
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || "http://localhost:5050").replace(
+  /\/+$/,
+  "",
+);
+
+const apiUrl = (path: string) => `${API_BASE}${path}`;
+const API_LABEL = API_BASE.replace(/^https?:\/\//, "");
 const processSteps = [
   {
     title: "Fetch",
@@ -47,7 +53,7 @@ function App() {
   const [error, setError] = useState("");
 
   const fetchGroups = async () => {
-    const response = await axios.get<NewsGroup[]>(`${API_BASE}/clustered-news`);
+    const response = await axios.get<NewsGroup[]>(apiUrl("/clustered-news"));
     return response.data;
   };
 
@@ -63,7 +69,7 @@ function App() {
     setError("");
 
     try {
-      await axios.get(`${API_BASE}/news`);
+      await axios.get(apiUrl("/news"));
       setGroups(await fetchGroups());
     } catch {
       setError("Unable to sync RSS feeds right now.");
@@ -261,7 +267,7 @@ function HeroMockup({
               <span className="h-3 w-3 rounded-full bg-emerald-300/80" />
             </div>
             <span className="rounded-full bg-white/[0.06] px-3 py-1 text-xs text-white/50">
-              localhost:5050
+              {API_LABEL}
             </span>
           </div>
 
